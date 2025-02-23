@@ -24,6 +24,11 @@ class SuratMasuk extends Model
         'pembuat',
     ];
 
+    protected $casts = [
+        'pembuat' => 'integer',
+    ];
+    
+
     /**
      * Relasi ke tabel kategori_surats
      */
@@ -35,8 +40,8 @@ class SuratMasuk extends Model
     /**
      * Relasi ke tabel users (pembuat surat)
      */
-    public function pembuatSurat()
+    public function pembuat()
     {
-        return $this->belongsTo(User::class, 'pembuat');
+        return $this->belongsTo(User::class, 'pembuat', 'id');
     }
 }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\KategoriSuratController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SuratMasukController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -41,10 +42,20 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth', 'permission:admin')->group(function () {
+    //kategori surat
     Route::get('admin/kategori-surat', [KategoriSuratController::class, 'index'])->name('kategori-surat.admin.index');
     Route::post('admin/kategori-surat', [KategoriSuratController::class, 'create'])->name('kategori-surat.admin.create');
     Route::delete('admin/kategori-surat/{kategori}', [KategoriSuratController::class, 'destroy'])->name('kategori-surat.admin.destroy');
     Route::put('admin/kategori-surat/{id}', [KategoriSuratController::class, 'update'])->name('kategori-surat.admin.update');
+
+    //surat masuk
+    Route::get('admin/surat-masuk', [SuratMasukController::class, 'index'])->name('surat-masuk.admin.index');
+    Route::get('admin/surat-masuk/tambah', [SuratMasukController::class, 'create'])->name('surat-masuk.admin.create');
+    Route::post('admin/surat-masuk', [SuratMasukController::class, 'store'])->name('surat-masuk.admin.store');
+    Route::delete('admin/surat-masuk/{suratMasuk}', [SuratMasukController::class, 'destroy'])->name('surat-masuk.admin.destroy');
+    Route::get('admin/surat-masuk/{suratMasuk}/edit', [SuratMasukController::class, 'edit'])->name('surat-masuk.admin.edit');
+    Route::put('admin/surat-masuk/{suratMasuk}', [SuratMasukController::class, 'update'])->name('surat-masuk.admin.update');
+    Route::get('admin/surat-masuk/{suratMasuk}/show', [SuratMasukController::class, 'show'])->name('surat-masuk.admin.show');
 });
 
 require __DIR__.'/auth.php';

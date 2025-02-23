@@ -50,4 +50,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(SuratMasuk::class, 'pembuat');
     }
+
+
 }

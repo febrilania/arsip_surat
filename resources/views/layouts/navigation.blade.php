@@ -34,7 +34,7 @@
                     <!-- Dropdown Menu -->
                     <div x-show="open" @click.away="open = false"
                         class="absolute mt-14 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
-                        <a href="" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Surat Masuk</a>
+                        <a href="{{route('surat-masuk.admin.index')}}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Surat Masuk</a>
                         <a href="" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Surat Keluar</a>
                     </div>
                 </div>
@@ -112,7 +112,7 @@
 
     <!-- Dropdown Menu -->
     <div x-show="open" class="mt-1 space-y-1">
-        <x-responsive-nav-link>
+        <x-responsive-nav-link :href="route('surat-masuk.admin.index')" :active="request()->routeIs('surat-masuk.admin.index')">
             {{ __('Surat Masuk') }}
         </x-responsive-nav-link>
         <x-responsive-nav-link>
