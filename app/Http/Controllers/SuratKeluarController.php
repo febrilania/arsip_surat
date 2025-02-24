@@ -2,23 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SuratKeluar;
 use App\Models\KategoriSurat;
 use App\Models\Log;
-use App\Models\SuratMasuk;
 use Illuminate\Http\Request;
 
-class SuratMasukController extends Controller
+class SuratKeluarController extends Controller
 {
     public function index()
     {
-        $suratMasuk = SuratMasuk::with('kategoriSurat')->paginate(5);
-        return view('admin/surat-masuk', compact('suratMasuk'));
+        $suratKeluar = SuratKeluar::with('kategoriSurat')->paginate(5);
+        return view('admin/surat-keluar', compact('suratKeluar'));
     }
-
-    public function create()
+    
+    public function create(Request $request)
     {
         $kategoriSurat = KategoriSurat::all();
-        return view('admin/tambah-surat-masuk', compact('kategoriSurat'));
+        return view('admin/tambah-surat-keluar', compact('kategoriSurat'));
     }
 
     public function store(Request $request)
@@ -38,40 +38,40 @@ class SuratMasukController extends Controller
 
         $file = $request->file('file_surat');
         $fileName = time() . '_' . $file->getClientOriginalName();
-        $filePath = $file->storeAs('surat_masuk', $fileName, 'public');
+        $filePath = $file->storeAs('surat_keluar', $fileName, 'public');
 
         $validated['file_surat'] = $filePath;
         $validated['pembuat'] = auth()->id();
 
-        SuratMasuk::create($validated);
+        SuratKeluar::create($validated);
 
         Log::create([
             'user_id' => auth()->id(),
-            'action' => 'Menambahkan surat masuk',
+            'action' => 'Menambahkan surat keluar',
             'ip_address' => $request->ip(),
         ]);
 
-        return redirect()->route('surat-masuk.admin.index')->with('success', 'Surat masuk berhasil ditambahkan');
+        return redirect()->route('surat-keluar.admin.index')->with('success', 'Surat keluar berhasil ditambahkan');
     }
 
-    public function destroy(SuratMasuk $suratMasuk)
+    public function destroy(SuratKeluar $suratKeluar)
     {
-        $suratMasuk->delete();
+        $suratKeluar->delete();
         Log::create([
             'user_id' => auth()->id(),
-            'action' => 'Menghapus surat masuk',
+            'action' => 'Menghapus surat keluar',
             'ip_address' => request()->ip(),
         ]);
-        return redirect()->back()->with('success', 'Surat masuk berhasil dihapus');
-    }
+        return redirect()->back()->with('success', 'Surat keluar berhasil dihapus');
+    }   
 
-    public function edit(SuratMasuk $suratMasuk)
+    public function edit(SuratKeluar $suratKeluar)
     {
         $kategoriSurat = KategoriSurat::all();
-        return view('admin/edit-surat-masuk', compact('suratMasuk', 'kategoriSurat'));
+        return view('admin/edit-surat-keluar', compact('suratKeluar', 'kategoriSurat'));
     }
 
-    public function update(Request $request, SuratMasuk $suratMasuk)
+    public function update(Request $request, SuratKeluar $suratKeluar)
     {
         $validated = $request->validate([
             'nomor_surat' => 'required|string|max:255',
@@ -89,28 +89,25 @@ class SuratMasukController extends Controller
         if ($request->hasFile('file_surat')) {
             $file = $request->file('file_surat');
             $fileName = time() . '_' . $file->getClientOriginalName();
-            $filePath = $file->storeAs('surat_masuk', $fileName, 'public');
-
+            $filePath = $file->storeAs('surat_keluar', $fileName, 'public');
             $validated['file_surat'] = $filePath;
         }
 
-        $suratMasuk->update($validated);
+        $validated['pembuat'] = auth()->id();
+
+        $suratKeluar->update($validated);
 
         Log::create([
             'user_id' => auth()->id(),
-            'action' => 'Mengubah surat masuk',
+            'action' => 'Mengubah surat keluar',
             'ip_address' => $request->ip(),
         ]);
 
-        return redirect()->route('surat-masuk.admin.index')->with('success', 'Surat masuk berhasil diperbarui');
+        return redirect()->route('surat-keluar.admin.index')->with('success', 'Surat keluar berhasil diubah');
     }
 
-    public function show($id)
+    public function show(SuratKeluar $suratKeluar)
     {
-        $suratMasuk = SuratMasuk::with('kategoriSurat', 'pembuat')->findOrFail($id);
-        //return response()->json($suratMasuk);
-        //dd($suratMasuk->pembuat);
-
-        return view('admin/detail-surat-masuk', compact('suratMasuk'));
+        return view('admin/detail-surat-keluar', compact('suratKeluar'));
     }
 }

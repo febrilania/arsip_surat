@@ -3,6 +3,7 @@
 use App\Http\Controllers\KategoriSuratController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SuratMasukController;
+use App\Http\Controllers\SuratKeluarController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->middleware('guest');
 
 Route::get('/dashboard', function () {
     $user = Auth::user(); // Simpan user agar tidak dipanggil berulang
@@ -56,6 +57,15 @@ Route::middleware('auth', 'permission:admin')->group(function () {
     Route::get('admin/surat-masuk/{suratMasuk}/edit', [SuratMasukController::class, 'edit'])->name('surat-masuk.admin.edit');
     Route::put('admin/surat-masuk/{suratMasuk}', [SuratMasukController::class, 'update'])->name('surat-masuk.admin.update');
     Route::get('admin/surat-masuk/{suratMasuk}/show', [SuratMasukController::class, 'show'])->name('surat-masuk.admin.show');
+
+    //surat keluar
+    Route::get('admin/surat-keluar', [SuratKeluarController::class, 'index'])->name('surat-keluar.admin.index');
+    Route::get('admin/surat-keluar/tambah', [SuratKeluarController::class, 'create'])->name('surat-keluar.admin.create');
+    Route::post('admin/surat-keluar', [SuratKeluarController::class, 'store'])->name('surat-keluar.admin.store');
+    Route::delete('admin/surat-keluar/{suratKeluar}', [SuratKeluarController::class, 'destroy'])->name('surat-keluar.admin.destroy');
+    Route::get('admin/surat-keluar/{suratKeluar}/edit', [SuratKeluarController::class, 'edit'])->name('surat-keluar.admin.edit');
+    Route::put('admin/surat-keluar/{suratKeluar}', [SuratKeluarController::class, 'update'])->name('surat-keluar.admin.update');
+    Route::get('admin/surat-keluar/{suratKeluar}/show', [SuratKeluarController::class, 'show'])->name('surat-keluar.admin.show');
 });
 
 require __DIR__.'/auth.php';

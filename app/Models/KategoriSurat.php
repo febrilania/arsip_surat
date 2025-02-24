@@ -15,4 +15,9 @@ class KategoriSurat extends Model
     {
         return $this->hasMany(SuratMasuk::class, 'kategori_surat_id');
     }
+
+    public function suratKeluar()
+    {
+        return $this->hasMany(SuratKeluar::class, 'kategori_surat_id');
+    }
 }
