@@ -38,6 +38,11 @@
                         <a href="{{route('surat-keluar.admin.index')}}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Surat Keluar</a>
                     </div>
                 </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link  class="text-gray-100">
+                        {{ __('Report') }}
+                    </x-nav-link>
+                </div>
             </div>
 
             <!-- Settings Dropdown -->
@@ -100,26 +105,32 @@
             </x-responsive-nav-link>
         </div>
         <div x-data="{ open: false }" class="pt-2 pb-3 space-y-1">
-    <!-- Tombol Dropdown -->
-    <button @click="open = !open"
-        class="w-full text-left px-4 py-2 text-md font-medium text-gray-300 hover:bg-gray-100 focus:outline-none flex justify-between">
-        {{ __('Surat') }}
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-        </svg>
-    </button>
+            <!-- Tombol Dropdown -->
+            <button @click="open = !open"
+                class="w-full text-left px-4 py-2 text-md font-medium text-gray-300 hover:bg-gray-100 focus:outline-none flex justify-between">
+                {{ __('Surat') }}
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
 
-    <!-- Dropdown Menu -->
-    <div x-show="open" class="mt-1 space-y-1">
-        <x-responsive-nav-link :href="route('surat-masuk.admin.index')" :active="request()->routeIs('surat-masuk.admin.index')">
-            {{ __('Surat Masuk') }}
-        </x-responsive-nav-link>
-        <x-responsive-nav-link :href="route('surat-keluar.admin.index')" :active="request()->routeIs('surat-keluar.admin.index')">
-            {{ __('Surat Keluar') }}
-        </x-responsive-nav-link>
-    </div>
-</div>
+            <!-- Dropdown Menu -->
+            <div x-show="open" class="mt-1 space-y-1">
+                <x-responsive-nav-link :href="route('surat-masuk.admin.index')" :active="request()->routeIs('surat-masuk.admin.index')">
+                    {{ __('Surat Masuk') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('surat-keluar.admin.index')" :active="request()->routeIs('surat-keluar.admin.index')">
+                    {{ __('Surat Keluar') }}
+                </x-responsive-nav-link>
+            </div>
+        </div>
+
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link>
+                {{ __('Report') }}
+            </x-responsive-nav-link>
+        </div>
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">

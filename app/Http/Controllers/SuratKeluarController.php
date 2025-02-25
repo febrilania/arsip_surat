@@ -110,4 +110,21 @@ class SuratKeluarController extends Controller
     {
         return view('admin/detail-surat-keluar', compact('suratKeluar'));
     }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        // Ambil data yang sesuai dengan pencarian
+        $suratKeluar = SuratKeluar::where('nomor_surat', 'LIKE', "%{$query}%")
+            ->orWhere('pengirim', 'LIKE', "%{$query}%")
+            ->orWhere('perihal', 'LIKE', "%{$query}%")
+            ->with('kategoriSurat')
+            ->paginate(5) // Tetap 10 data per halaman
+            ->withQueryString(); // Agar paginasi tetap berjalan
+
+        return response()->json([
+            'html' => view('admin.partial.surat-keluar.table', compact('suratKeluar'))->render()
+        ]);
+    }
 }

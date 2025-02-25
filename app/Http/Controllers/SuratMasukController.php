@@ -113,4 +113,22 @@ class SuratMasukController extends Controller
 
         return view('admin/detail-surat-masuk', compact('suratMasuk'));
     }
+
+     public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        // Ambil data yang sesuai dengan pencarian
+        $suratMasuk = SuratMasuk::where('nomor_surat', 'LIKE', "%{$query}%")
+            ->orWhere('pengirim', 'LIKE', "%{$query}%")
+            ->orWhere('perihal', 'LIKE', "%{$query}%")
+            ->with('kategoriSurat')
+            ->paginate(5) // Tetap 10 data per halaman
+            ->withQueryString(); // Agar paginasi tetap berjalan
+
+        return response()->json([
+            'html' => view('admin.partial.surat-masuk.table', compact('suratMasuk'))->render()
+        ]);
+    }
+
 }

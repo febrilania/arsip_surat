@@ -57,7 +57,9 @@ Route::middleware('auth', 'permission:admin')->group(function () {
     Route::get('admin/surat-masuk/{suratMasuk}/edit', [SuratMasukController::class, 'edit'])->name('surat-masuk.admin.edit');
     Route::put('admin/surat-masuk/{suratMasuk}', [SuratMasukController::class, 'update'])->name('surat-masuk.admin.update');
     Route::get('admin/surat-masuk/{suratMasuk}/show', [SuratMasukController::class, 'show'])->name('surat-masuk.admin.show');
-
+    Route::get('admin/search/surat-masuk', [SuratMasukController::class, 'search'])->name('surat-masuk.admin.search');
+    
+    
     //surat keluar
     Route::get('admin/surat-keluar', [SuratKeluarController::class, 'index'])->name('surat-keluar.admin.index');
     Route::get('admin/surat-keluar/tambah', [SuratKeluarController::class, 'create'])->name('surat-keluar.admin.create');
@@ -66,6 +68,7 @@ Route::middleware('auth', 'permission:admin')->group(function () {
     Route::get('admin/surat-keluar/{suratKeluar}/edit', [SuratKeluarController::class, 'edit'])->name('surat-keluar.admin.edit');
     Route::put('admin/surat-keluar/{suratKeluar}', [SuratKeluarController::class, 'update'])->name('surat-keluar.admin.update');
     Route::get('admin/surat-keluar/{suratKeluar}/show', [SuratKeluarController::class, 'show'])->name('surat-keluar.admin.show');
+    Route::get('admin/search/surat-keluar', [SuratKeluarController::class, 'search'])->name('surat-keluar.admin.search');
 });
 
 require __DIR__.'/auth.php';
