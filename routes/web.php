@@ -58,6 +58,9 @@ Route::middleware('auth', 'permission:admin')->group(function () {
     Route::put('admin/surat-masuk/{suratMasuk}', [SuratMasukController::class, 'update'])->name('surat-masuk.admin.update');
     Route::get('admin/surat-masuk/{suratMasuk}/show', [SuratMasukController::class, 'show'])->name('surat-masuk.admin.show');
     Route::get('admin/search/surat-masuk', [SuratMasukController::class, 'search'])->name('surat-masuk.admin.search');
+    Route::get('admin/surat-masuk/form/laporan', [SuratMasukController::class, 'formLaporan'])->name('surat-masuk.admin.form-laporan'); 
+    Route::post('admin/surat-masuk/laporan', [SuratMasukController::class, 'laporan_surat'])->name('surat-masuk.admin.laporan');
+    Route::get('admin/laporan-surat-masuk/pdf', [SuratMasukController::class, 'exportPdf'])->name('laporan.surat-masuk.admin.pdf');
     
     
     //surat keluar

@@ -13,7 +13,7 @@
                 </tr>
             </thead>
             <tbody class="text-gray-700 text-xs md:text-sm">
-                @foreach ($suratKeluar as $key => $surat)
+                @forelse ($suratKeluar as $key => $surat)
                 <tr class="bg-white hover:bg-gray-50">
                     <td class="py-2 border border-gray-200 text-center p-4">{{ $suratKeluar->firstItem() + $key }}</td>
                     <td class="py-2 border border-gray-200 text-center p-4">{{ $surat->nomor_surat }}</td>
@@ -39,7 +39,13 @@
                         </div>
                     </td>
                 </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="7" class="text-center py-4 text-gray-500">
+                        Tidak ada surat keluar untuk ditampilkan.
+                    </td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
