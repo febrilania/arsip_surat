@@ -72,6 +72,9 @@ Route::middleware('auth', 'permission:admin')->group(function () {
     Route::put('admin/surat-keluar/{suratKeluar}', [SuratKeluarController::class, 'update'])->name('surat-keluar.admin.update');
     Route::get('admin/surat-keluar/{suratKeluar}/show', [SuratKeluarController::class, 'show'])->name('surat-keluar.admin.show');
     Route::get('admin/search/surat-keluar', [SuratKeluarController::class, 'search'])->name('surat-keluar.admin.search');
+    Route::get('admin/surat-keluar/form/laporan', [SuratKeluarController::class, 'formLaporan'])->name('surat-keluar.admin.form-laporan');
+    Route::post('admin/surat-keluar/laporan', [SuratKeluarController::class, 'laporan_surat'])->name('surat-keluar.admin.laporan');
+    Route::get('admin/laporan-surat-keluar/pdf', [SuratKeluarController::class, 'exportPdf'])->name('laporan.surat-keluar.admin.pdf');
 });
 
 require __DIR__.'/auth.php';

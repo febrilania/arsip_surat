@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SuratKeluar;
 use App\Models\KategoriSurat;
 use App\Models\Log;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class SuratKeluarController extends Controller
@@ -126,5 +127,31 @@ class SuratKeluarController extends Controller
         return response()->json([
             'html' => view('admin.partial.surat-keluar.table', compact('suratKeluar'))->render()
         ]);
+    }
+
+    public function formLaporan()
+    {
+        return view('admin/form-laporan-surat-keluar');
+    }
+
+    public function laporan_surat(Request $request)
+    {
+        $validated = $request->validate([
+            'tanggal_awal' => 'required|date',
+            'tanggal_akhir' => 'required|date',
+        ]);
+
+        $suratKeluar = SuratKeluar::whereBetween('tanggal_surat', [$validated['tanggal_awal'], $validated['tanggal_akhir']])
+        ->with('kategoriSurat')->paginate(5)->withQueryString();
+
+
+        return view('admin/laporan-surat-keluar', compact('suratKeluar'));
+    }
+
+    public function exportPdf()
+    {
+        $suratKeluar = SuratKeluar::all();
+        $pdf = Pdf::loadView('admin/pdf-surat-keluar', compact('suratKeluar'));
+        return $pdf->download('laporan-surat-keluar.pdf');
     }
 }
