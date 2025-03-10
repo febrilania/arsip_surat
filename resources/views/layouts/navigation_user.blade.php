@@ -16,6 +16,46 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('kategori-surat.admin.index')" :active="request()->routeIs('kategori-surat.admin.index')" class="text-gray-100">
+                        {{ __('Kategori Surat') }}
+                    </x-nav-link>
+                </div>
+                <div x-data="{ open: false }" class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex relative">
+                    <!-- Tombol Dropdown -->
+                    <button @click="open = !open" class="text-gray-300 hover:text-gray-200 text-sm mt-1 focus:outline-none">
+                        Surat
+                        <svg class="w-4 h-4 inline-block ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div x-show="open" @click.away="open = false"
+                        class="absolute mt-14 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
+                        <a href="{{route('surat-masuk.admin.index')}}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Surat Masuk</a>
+                        <a href="{{route('surat-keluar.admin.index')}}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Surat Keluar</a>
+                    </div>
+                </div>
+                <div x-data="{ open: false }" class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex relative">
+                    <!-- Tombol Dropdown -->
+                    <button @click="open = !open" class="text-gray-300 hover:text-gray-200 text-sm mt-1 focus:outline-none">
+                        Laporan
+                        <svg class="w-4 h-4 inline-block ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div x-show="open" @click.away="open = false"
+                        class="absolute mt-14 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
+                        <a href="{{route('surat-masuk.admin.form-laporan')}}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Laporan Surat Masuk</a>
+                        <a href="{{route('surat-keluar.admin.form-laporan')}}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Laporan Surat Keluar</a>
+                    </div>
+                </div>
             </div>
 
             <!-- Settings Dropdown -->

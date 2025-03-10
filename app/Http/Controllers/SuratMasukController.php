@@ -5,17 +5,28 @@ namespace App\Http\Controllers;
 use App\Models\KategoriSurat;
 use App\Models\Log;
 use App\Models\SuratMasuk;
-use Barryvdh\DomPDF\Facade as PDF;
-use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 
 class SuratMasukController extends Controller
 {
     public function index()
     {
-        $suratMasuk = SuratMasuk::with('kategoriSurat')->paginate(5);
-        return view('admin/surat-masuk', compact('suratMasuk'));
+        // Ambil user yang sedang login
+        $user = Auth::user();
+
+        // Jika user adalah admin, tampilkan semua surat masuk
+        if ($user->role === 'admin') {
+            $suratMasuk = SuratMasuk::with('kategoriSurat')->paginate(5);
+            return view('admin/surat-masuk', compact('suratMasuk'));
+        } else {
+            // Jika user biasa, hanya tampilkan surat yang dibuat oleh user tersebut
+            $suratMasuk = SuratMasuk::with('kategoriSurat')
+                ->where('pembuat', $user->id)
+                ->paginate(5);
+            return view('admin/surat-masuk', compact('suratMasuk'));
+        }
     }
 
     public function create()
@@ -117,7 +128,7 @@ class SuratMasukController extends Controller
         return view('admin/detail-surat-masuk', compact('suratMasuk'));
     }
 
-     public function search(Request $request)
+    public function search(Request $request)
     {
         $query = $request->input('query');
 
@@ -139,36 +150,49 @@ class SuratMasukController extends Controller
         return view('admin/form-laporan-surat-masuk');
     }
 
-    public function laporan_surat(Request $request){
+    public function laporan_surat(Request $request)
+    {
+        // Validasi input tanggal
         $validated = $request->validate([
             'tanggal_awal' => 'required|date',
             'tanggal_akhir' => 'required|date',
         ]);
 
-        $suratMasuk = SuratMasuk::whereBetween('tanggal_surat', [$validated['tanggal_awal'], $validated['tanggal_akhir']])
-            ->with('kategoriSurat')->paginate(5)->withQueryString();
+        // Ambil user yang sedang login
+        $user = Auth::user();
+
+        // Jika user adalah admin, ambil semua surat keluar dalam rentang tanggal
+        if ($user->role === 'admin') {
+            $suratMasuk = SuratMasuk::whereBetween('tanggal_surat', [$validated['tanggal_awal'], $validated['tanggal_akhir']])
+                ->with('kategoriSurat')
+                ->paginate(5)
+                ->withQueryString();
+        } else {
+            // Jika user biasa, hanya tampilkan surat yang dibuat oleh user tersebut
+            $suratMasuk = SuratMasuk::where('pembuat', $user->id)
+                ->whereBetween('tanggal_surat', [$validated['tanggal_awal'], $validated['tanggal_akhir']])
+                ->with('kategoriSurat')
+                ->paginate(5)
+                ->withQueryString();
+        }
 
         return view('admin/laporan-surat-masuk', compact('suratMasuk'));
     }
 
-    public function exportPdf(Request $request)
-{
-    // Validasi input tanggal
-    $validated = $request->validate([
-        'tanggal_awal' => 'required|date',
-        'tanggal_akhir' => 'required|date',
-    ]);
+    public function exportPdf()
+    {
+        // Ambil user yang sedang login
+        $user = Auth::user();
 
-    // Ambil data surat masuk sesuai filter
-    $suratMasuk = SuratMasuk::whereBetween('tanggal_surat', [$validated['tanggal_awal'], $validated['tanggal_akhir']])
-        ->with('kategoriSurat')
-        ->get();
+        // Jika admin, ambil semua surat keluar
+        if ($user->role === 'admin') {
+            $suratMasuk = SuratMasuk::all();
+        } else {
+            // Jika user biasa, hanya ambil surat keluar miliknya
+            $suratMasuk = SuratMasuk::where('pembuat', $user->id)->get();
+        }
 
-    // Buat PDF dengan data yang sesuai
-    $pdf = FacadePdf::loadView('admin.pdf-surat-masuk', compact('suratMasuk'));
-
-    return $pdf->download('laporan_surat_masuk.pdf');
-}
-
-
+        $pdf = Pdf::loadView('admin/pdf-surat-keluar', compact('suratMasuk'));
+        return $pdf->download('laporan-surat-masuk.pdf');
+    }
 }

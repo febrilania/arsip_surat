@@ -55,6 +55,11 @@
                         <a href="{{route('surat-keluar.admin.form-laporan')}}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Laporan Surat Keluar</a>
                     </div>
                 </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('users.admin.index')" :active="request()->routeIs('users.admin.index')" class="text-gray-100">
+                        {{ __('User') }}
+                    </x-nav-link>
+                </div>
             </div>
 
             <!-- Settings Dropdown -->

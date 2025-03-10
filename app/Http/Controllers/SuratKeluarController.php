@@ -7,15 +7,28 @@ use App\Models\KategoriSurat;
 use App\Models\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SuratKeluarController extends Controller
 {
     public function index()
     {
-        $suratKeluar = SuratKeluar::with('kategoriSurat')->paginate(5);
-        return view('admin/surat-keluar', compact('suratKeluar'));
+        // Ambil user yang sedang login
+        $user = Auth::user();
+
+        // Jika user adalah admin, tampilkan semua surat masuk
+        if ($user->role === 'admin') {
+            $suratKeluar = SuratKeluar::with('kategoriSurat')->paginate(5);
+            return view('admin/surat-keluar', compact('suratKeluar'));
+        } else {
+            // Jika user biasa, hanya tampilkan surat yang dibuat oleh user tersebut
+            $suratKeluar = SuratKeluar::with('kategoriSurat')
+                ->where('pembuat', $user->id)
+                ->paginate(5);
+            return view('admin/surat-keluar', compact('suratKeluar'));
+        }
     }
-    
+
     public function create(Request $request)
     {
         $kategoriSurat = KategoriSurat::all();
@@ -64,7 +77,7 @@ class SuratKeluarController extends Controller
             'ip_address' => request()->ip(),
         ]);
         return redirect()->back()->with('success', 'Surat keluar berhasil dihapus');
-    }   
+    }
 
     public function edit(SuratKeluar $suratKeluar)
     {
@@ -134,23 +147,50 @@ class SuratKeluarController extends Controller
         return view('admin/form-laporan-surat-keluar');
     }
 
+
     public function laporan_surat(Request $request)
     {
+        // Validasi input tanggal
         $validated = $request->validate([
             'tanggal_awal' => 'required|date',
             'tanggal_akhir' => 'required|date',
         ]);
 
-        $suratKeluar = SuratKeluar::whereBetween('tanggal_surat', [$validated['tanggal_awal'], $validated['tanggal_akhir']])
-        ->with('kategoriSurat')->paginate(5)->withQueryString();
+        // Ambil user yang sedang login
+        $user = Auth::user();
 
+        // Jika user adalah admin, ambil semua surat keluar dalam rentang tanggal
+        if ($user->role === 'admin') {
+            $suratKeluar = SuratKeluar::whereBetween('tanggal_surat', [$validated['tanggal_awal'], $validated['tanggal_akhir']])
+                ->with('kategoriSurat')
+                ->paginate(5)
+                ->withQueryString();
+        } else {
+            // Jika user biasa, hanya tampilkan surat yang dibuat oleh user tersebut
+            $suratKeluar = SuratKeluar::where('pembuat', $user->id)
+                ->whereBetween('tanggal_surat', [$validated['tanggal_awal'], $validated['tanggal_akhir']])
+                ->with('kategoriSurat')
+                ->paginate(5)
+                ->withQueryString();
+        }
 
         return view('admin/laporan-surat-keluar', compact('suratKeluar'));
     }
 
+
     public function exportPdf()
     {
-        $suratKeluar = SuratKeluar::all();
+        // Ambil user yang sedang login
+        $user = Auth::user();
+
+        // Jika admin, ambil semua surat keluar
+        if ($user->role === 'admin') {
+            $suratKeluar = SuratKeluar::all();
+        } else {
+            // Jika user biasa, hanya ambil surat keluar miliknya
+            $suratKeluar = SuratKeluar::where('pembuat', $user->id)->get();
+        }
+
         $pdf = Pdf::loadView('admin/pdf-surat-keluar', compact('suratKeluar'));
         return $pdf->download('laporan-surat-keluar.pdf');
     }
