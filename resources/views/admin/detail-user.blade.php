@@ -13,7 +13,7 @@
                         <!-- Profile Picture -->
                         <img src="{{ asset('storage/'. $user->profile_photo)  }}" 
                              alt="Profile Picture" 
-                             class="w-24 h-24 rounded-full border">
+                             class="w-48 h-56 rounded-lg border-4 border-gray-300 object-cover shadow-md">
                         <div>
                             <h3 class="text-2xl font-semibold">{{ $user->name }}</h3>
                             <p class="text-gray-600">{{ '@' . $user->username }}</p>

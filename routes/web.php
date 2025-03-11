@@ -81,6 +81,7 @@ Route::middleware('auth', 'permission:admin')->group(function () {
     Route::get('admin/users',[UserController::class, 'index'])->name('users.admin.index');
     Route::get('admin/users/{id}', [UserController::class, 'show'])->name('users.admin.show');
     Route::get('admin/users/edit/{id}', [UserController::class, 'edit'])->name('users.admin.edit');
+    Route::post('admin/user/create',[UserController::class,'create'])->name('users.admin.create');
     Route::put('admin/users/update/{id}',[UserController::class, 'update'])->name('users.admin.update');
     Route::delete('admin/users/delete/{id}',[UserController::class, 'delete'])->name('users.admin.delete');
 });
