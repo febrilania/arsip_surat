@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <form action="{{ route('laporan.surat-keluar.admin.pdf') }}" method="GET">
+                    <form action="{{ route('laporan.surat-keluar.admin.pdf', ['tanggal_awal' => request('tanggal_awal'), 'tanggal_akhir' => request('tanggal_akhir')] ) }}" method="GET">
                         @csrf
                         <input type="hidden" name="tanggal_awal" value="{{ request('tanggal_awal') }}">
                         <input type="hidden" name="tanggal_akhir" value="{{ request('tanggal_akhir') }}">

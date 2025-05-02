@@ -178,20 +178,33 @@ class SuratKeluarController extends Controller
     }
 
 
-    public function exportPdf()
+    public function exportPdf(Request $request)
     {
         // Ambil user yang sedang login
         $user = Auth::user();
+        $tanggalAwal = $request->input('tanggal_awal');
+        $tanggalAkhir = $request->input('tanggal_akhir');
+
+        // Validasi tanggal (optional tapi disarankan)
+        $request->validate([
+            'tanggal_awal' => 'required|date',
+            'tanggal_akhir' => 'required|date',
+        ]);
 
         // Jika admin, ambil semua surat keluar
         if ($user->role === 'admin') {
-            $suratKeluar = SuratKeluar::all();
+            $query = SuratKeluar::query();;
         } else {
             // Jika user biasa, hanya ambil surat keluar miliknya
-            $suratKeluar = SuratKeluar::where('pembuat', $user->id)->get();
+            $query = SuratKeluar::where('pembuat', $user->id)->get();
         }
 
-        $pdf = Pdf::loadView('admin/pdf-surat-keluar', compact('suratKeluar'));
-        return $pdf->download('laporan-surat-keluar.pdf');
+        // Filter berdasarkan rentang tanggal
+        $query->whereBetween('tanggal_surat', [$tanggalAwal, $tanggalAkhir]);
+
+        $suratKeluar = $query->with('kategoriSurat')->get();
+
+        $pdf = Pdf::loadView('admin/pdf-surat-keluar', compact('suratMasuk', 'tanggalAwal', 'tanggalAkhir'));
+        return $pdf->download("laporan-surat-keluar-{$tanggalAwal}_{$tanggalAkhir}.pdf");
     }
 }
