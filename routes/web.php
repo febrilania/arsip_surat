@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KategoriSuratController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SuratMasukController;
@@ -24,16 +25,14 @@ Route::get('/', function () {
 })->middleware('guest');
 
 Route::get('/dashboard', function () {
-    $user = Auth::user(); // Simpan user agar tidak dipanggil berulang
-
-    // Daftar role yang valid
+    $user = Auth::user();
     $validRoles = ['admin', 'user'];
-    // Cek apakah role user valid
+
     if (in_array($user->role, $validRoles)) {
-        return view($user->role . '/dashboard');
+        $data = DashboardController::getDashboardData();
+        return view($user->role . '/dashboard', $data);
     }
 
-    // Jika role tidak valid, tampilkan error
     abort(403, 'Role tidak dikenali');
 })->middleware(['auth', 'verified'])->name('dashboard');
 

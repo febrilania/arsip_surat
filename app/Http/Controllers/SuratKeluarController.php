@@ -153,7 +153,9 @@ class SuratKeluarController extends Controller
         // Validasi input tanggal
         $validated = $request->validate([
             'tanggal_awal' => 'required|date',
-            'tanggal_akhir' => 'required|date',
+            'tanggal_akhir' => 'required|date|after_or_equal:tanggal_awal',
+        ],[
+            'tanggal_akhir.after_or_equal' => 'Tanggal akhir tidak boleh lebih kecil dari tanggal awal.',
         ]);
 
         // Ambil user yang sedang login
