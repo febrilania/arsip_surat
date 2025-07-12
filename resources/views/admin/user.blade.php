@@ -127,7 +127,6 @@
     </div>
 </div>
 
-
 <script>
     function openModal() {
         document.getElementById('modal').classList.remove('hidden');

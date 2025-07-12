@@ -130,15 +130,29 @@ class SuratMasukController extends Controller
 
     public function search(Request $request)
     {
+        $user = Auth::user();
         $query = $request->input('query');
 
-        // Ambil data yang sesuai dengan pencarian
-        $suratMasuk = SuratMasuk::where('nomor_surat', 'LIKE', "%{$query}%")
-            ->orWhere('pengirim', 'LIKE', "%{$query}%")
-            ->orWhere('perihal', 'LIKE', "%{$query}%")
-            ->with('kategoriSurat')
-            ->paginate(5) // Tetap 10 data per halaman
-            ->withQueryString(); // Agar paginasi tetap berjalan
+        if ($user->role === 'admin') {
+            $suratMasuk = SuratMasuk::where(function ($q) use ($query) {
+                $q->where('nomor_surat', 'LIKE', "%{$query}%")
+                    ->orWhere('pengirim', 'LIKE', "%{$query}%")
+                    ->orWhere('perihal', 'LIKE', "%{$query}%");
+            })
+                ->with('kategoriSurat')
+                ->paginate(5)
+                ->withQueryString();
+        } else {
+            $suratMasuk = SuratMasuk::where(function ($q) use ($query) {
+                $q->where('nomor_surat', 'LIKE', "%{$query}%")
+                    ->orWhere('pengirim', 'LIKE', "%{$query}%")
+                    ->orWhere('perihal', 'LIKE', "%{$query}%");
+            })
+                ->where('pembuat', $user->id)
+                ->with('kategoriSurat')
+                ->paginate(5)
+                ->withQueryString();
+        }
 
         return response()->json([
             'html' => view('admin.partial.surat-masuk.table', compact('suratMasuk'))->render()
@@ -156,7 +170,7 @@ class SuratMasukController extends Controller
         $validated = $request->validate([
             'tanggal_awal' => 'required|date',
             'tanggal_akhir' => 'required|date|after_or_equal:tanggal_awal',
-        ],[
+        ], [
             'tanggal_akhir.after_or_equal' => 'Tanggal akhir tidak boleh lebih kecil dari tanggal awal.',
         ]);
 
