@@ -180,14 +180,12 @@ class SuratKeluarController extends Controller
         if ($user->role === 'admin') {
             $suratKeluar = SuratKeluar::whereBetween('tanggal_surat', [$validated['tanggal_awal'], $validated['tanggal_akhir']])
                 ->with('kategoriSurat')
-                ->paginate(5)
                 ->withQueryString();
         } else {
             // Jika user biasa, hanya tampilkan surat yang dibuat oleh user tersebut
             $suratKeluar = SuratKeluar::where('pembuat', $user->id)
                 ->whereBetween('tanggal_surat', [$validated['tanggal_awal'], $validated['tanggal_akhir']])
                 ->with('kategoriSurat')
-                ->paginate(5)
                 ->withQueryString();
         }
 

@@ -181,14 +181,12 @@ class SuratMasukController extends Controller
         if ($user->role === 'admin') {
             $suratMasuk = SuratMasuk::whereBetween('tanggal_surat', [$validated['tanggal_awal'], $validated['tanggal_akhir']])
                 ->with('kategoriSurat')
-                ->paginate(5)
                 ->withQueryString();
         } else {
             // Jika user biasa, hanya tampilkan surat yang dibuat oleh user tersebut
             $suratMasuk = SuratMasuk::where('pembuat', $user->id)
                 ->whereBetween('tanggal_surat', [$validated['tanggal_awal'], $validated['tanggal_akhir']])
                 ->with('kategoriSurat')
-                ->paginate(5)
                 ->withQueryString();
         }
 
