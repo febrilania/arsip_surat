@@ -31,7 +31,7 @@
                                 <tbody class="text-gray-700 text-xs md:text-sm">
                                     @forelse ($suratKeluar as $key => $surat)
                                     <tr class="bg-white hover:bg-gray-50 transition duration-200 ease-in-out">
-                                        <td class="py-3 px-4 border border-gray-200 text-center">{{ $suratKeluar->firstItem() + $key }}</td>
+                                        <td class="py-3 px-4 border border-gray-200 text-center">{{ $key + 1 }}</td>
                                         <td class="py-3 px-4 border border-gray-200 text-center">{{ $surat->nomor_surat }}</td>
                                         <td class="py-3 px-4 border border-gray-200 text-center">{{ \Carbon\Carbon::parse($surat->tanggal_surat)->translatedFormat('d F Y') }}</td>
                                         <td class="py-3 px-4 border border-gray-200 text-center">{{ $surat->pengirim }}</td>
@@ -49,7 +49,7 @@
                         </div>
                     </div>
                     <div class="mt-4">
-                        {{ $suratKeluar->links() }}
+                        {{-- {{ $suratKeluar->links() }} --}}
                     </div>
                 </div>
             </div>

@@ -181,25 +181,23 @@ class SuratMasukController extends Controller
         if ($user->role === 'admin') {
             $suratMasuk = SuratMasuk::whereBetween('tanggal_surat', [$validated['tanggal_awal'], $validated['tanggal_akhir']])
                 ->with('kategoriSurat')
-                ->withQueryString();
+                ->get();
         } else {
             // Jika user biasa, hanya tampilkan surat yang dibuat oleh user tersebut
             $suratMasuk = SuratMasuk::where('pembuat', $user->id)
                 ->whereBetween('tanggal_surat', [$validated['tanggal_awal'], $validated['tanggal_akhir']])
                 ->with('kategoriSurat')
-                ->withQueryString();
+                ->get();
         }
 
         return view('admin/laporan-surat-masuk', compact('suratMasuk'));
     }
-
     public function exportPdf(Request $request)
     {
         $user = Auth::user();
         $tanggalAwal = $request->input('tanggal_awal');
         $tanggalAkhir = $request->input('tanggal_akhir');
 
-        // Validasi tanggal (optional tapi disarankan)
         $request->validate([
             'tanggal_awal' => 'required|date',
             'tanggal_akhir' => 'required|date',
@@ -211,10 +209,9 @@ class SuratMasukController extends Controller
             $query = SuratMasuk::where('pembuat', $user->id);
         }
 
-        // Filter berdasarkan rentang tanggal
         $query->whereBetween('tanggal_surat', [$tanggalAwal, $tanggalAkhir]);
 
-        $suratMasuk = $query->with('kategoriSurat')->get();
+        $suratKeluar = $query->with('kategoriSurat')->get();
 
         $pdf = Pdf::loadView('admin/pdf-surat-masuk', compact('suratMasuk', 'tanggalAwal', 'tanggalAkhir'));
         return $pdf->download("laporan-surat-masuk-{$tanggalAwal}_{$tanggalAkhir}.pdf");

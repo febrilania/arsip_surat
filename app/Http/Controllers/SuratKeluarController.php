@@ -180,46 +180,39 @@ class SuratKeluarController extends Controller
         if ($user->role === 'admin') {
             $suratKeluar = SuratKeluar::whereBetween('tanggal_surat', [$validated['tanggal_awal'], $validated['tanggal_akhir']])
                 ->with('kategoriSurat')
-                ->withQueryString();
+                ->get();
         } else {
             // Jika user biasa, hanya tampilkan surat yang dibuat oleh user tersebut
             $suratKeluar = SuratKeluar::where('pembuat', $user->id)
                 ->whereBetween('tanggal_surat', [$validated['tanggal_awal'], $validated['tanggal_akhir']])
                 ->with('kategoriSurat')
-                ->withQueryString();
+                ->get();
         }
 
         return view('admin/laporan-surat-keluar', compact('suratKeluar'));
     }
-
-
     public function exportPdf(Request $request)
     {
-        // Ambil user yang sedang login
         $user = Auth::user();
         $tanggalAwal = $request->input('tanggal_awal');
         $tanggalAkhir = $request->input('tanggal_akhir');
 
-        // Validasi tanggal (optional tapi disarankan)
         $request->validate([
             'tanggal_awal' => 'required|date',
             'tanggal_akhir' => 'required|date',
         ]);
 
-        // Jika admin, ambil semua surat keluar
         if ($user->role === 'admin') {
-            $query = SuratKeluar::query();;
+            $query = SuratKeluar::query();
         } else {
-            // Jika user biasa, hanya ambil surat keluar miliknya
-            $query = SuratKeluar::where('pembuat', $user->id)->get();
+            $query = SuratKeluar::where('pembuat', $user->id);
         }
 
-        // Filter berdasarkan rentang tanggal
         $query->whereBetween('tanggal_surat', [$tanggalAwal, $tanggalAkhir]);
 
         $suratKeluar = $query->with('kategoriSurat')->get();
 
-        $pdf = Pdf::loadView('admin/pdf-surat-keluar', compact('suratMasuk', 'tanggalAwal', 'tanggalAkhir'));
+        $pdf = Pdf::loadView('admin/pdf-surat-keluar', compact('suratKeluar', 'tanggalAwal', 'tanggalAkhir'));
         return $pdf->download("laporan-surat-keluar-{$tanggalAwal}_{$tanggalAkhir}.pdf");
     }
 }
